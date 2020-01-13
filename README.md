@@ -9,7 +9,7 @@
 <pre>pip install -r requirements.txt</pre>
 
 **Usage:**
-<pre>python validator.py --json=doc.json</pre>
+<pre>python validator.py --file=doc.json</pre>
 
 **Test valid and invalid examples:**
 <pre>python tests.py</pre>
