@@ -2,7 +2,8 @@
 
 **Set up:**
 
-- clone the repo
+- clone the repo, **important:** use `--recursive` to fetch the latest version of dats submodule:
+<pre>git clone https://github.com/zxenia/dats_validator.git --recursive</pre>
 - create and activate virtual environment
 - install required packages:
 <pre>pip install -r requirements.txt</pre>
