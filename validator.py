@@ -27,10 +27,10 @@ def main(argv):
 
     with open(json_filename) as json_file:
         json_obj = json.load(json_file)
-        validate_json(json_obj)
+        validate_json(json_obj, json_filename)
 
 
-def validate_json(json_obj):
+def validate_json(json_obj, filename):
     with open(SCHEMA_PATH) as s:
         json_schema = json.load(s)
     # first validate schema file
@@ -42,10 +42,18 @@ def validate_json(json_obj):
         return True
     except jsonschema.exceptions.ValidationError:
         errors = [e for e in v.iter_errors((json_obj))]
+        error_report = []
         logger.info(f"The file is not valid. Total errors: {len(errors)}")
         for i, error in enumerate(errors, 1):
-            logger.error(f"{i} Validation error in {'.'.join(str(v) for v in error.path)}: {error.message}")
+            error_message = f"{i} Validation error in {'.'.join(str(v) for v in error.path)}: {error.message}"
+            error_report.append((error_message))
+            logger.error(error_message)
         logger.info('Validation failed.')
+        change_filename = filename.split('.json')[0]
+        with open(f"{change_filename}_errors.txt", "w") as output_file:
+            for error in error_report:
+                output_file.write(error + '\n')
+        output_file.close()
         return False
 
 
