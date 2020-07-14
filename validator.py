@@ -113,11 +113,12 @@ def validate_non_schema_required(json_obj):
     errors = []
     validate_recursively(json_obj, errors)
     if len(errors) > 0:
-        logger.error(f"Total required extra properties errors: {len(errors)}")
+        logger.info(f"Total required extra properties errors: {len(errors)}")
         for i, er in enumerate(errors, 1):
             logger.error(f"{i} {er}")
         return False
     else:
+        logger.info(f"Required extra properties validation passed.")
         return True
 
 
