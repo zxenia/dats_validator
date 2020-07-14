@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 SCHEMA_PATH = os.path.dirname(os.path.realpath(__file__)) + '/conp-dats/dataset_schema.json'
 
 
-# set value to 0 if there is no controlled vocabulary list, set a value to a list if there is one.
+# set value to 0 if there is no controlled vocabulary list, set value to a list if there is one.
 REQUIRED_EXTRA_PROPERTIES = {
     "files": 0,
     "subjects": 0,
@@ -50,14 +50,14 @@ def validate_json(json_obj):
     # now validate json file
     try:
         jsonschema.validate(json_obj, json_schema, format_checker=jsonschema.FormatChecker())
-        logger.info('JSON schema validation passed.')
+        logger.info("JSON schema validation passed.")
         return True
     except jsonschema.exceptions.ValidationError:
         errors = [e for e in v.iter_errors((json_obj))]
         logger.info(f"The file is not valid. Total json schema errors: {len(errors)}")
         for i, error in enumerate(errors, 1):
             logger.error(f"{i} Validation error in {'.'.join(str(v) for v in error.path)}: {error.message}")
-        logger.info('JSON schema validation failed.')
+        logger.info("JSON schema validation failed.")
         return False
 
 
@@ -72,14 +72,14 @@ def validate_extra_properties(dataset):
         for category in REQUIRED_EXTRA_PROPERTIES:
             if category not in extra_prop_categories:
                 error_message = f"Validation error in {dataset['title']}: " \
-                                f"extraProperties - category - {category} is not found."
+                                f"extraProperties.category.{category} is required but not found."
                 errors.append(error_message)
 
         # checks if values of required extraProperties are correct according to a controlled vocabulary
         if "CONP_status" in extra_prop_categories:
             for each_value in extra_prop_categories["CONP_status"]:
                 if each_value not in REQUIRED_EXTRA_PROPERTIES["CONP_status"]:
-                    error_message = f"Validation error in {dataset['title']}: extraProperties - category - " \
+                    error_message = f"Validation error in {dataset['title']}: extraProperties.category." \
                                     f"CONP_status - {each_value} is not allowed value for CONP_status. " \
                                     f"Allowed values are {REQUIRED_EXTRA_PROPERTIES['CONP_status']}."
                     errors.append(error_message)
@@ -93,7 +93,7 @@ def validate_extra_properties(dataset):
     # if it's not present an Exception is raised
     except KeyError as e:
         raise Exception(f"{e} is required."
-                        f"The following extraProperties categories are required: "
+                        f"The following extra properties categories are required: "
                         f"{[k for k in REQUIRED_EXTRA_PROPERTIES.keys()]}")
 
 
@@ -112,7 +112,7 @@ def validate_non_schema_required(json_obj):
 
     errors = []
     validate_recursively(json_obj, errors)
-    if len(errors) > 0:
+    if errors:
         logger.info(f"Total required extra properties errors: {len(errors)}")
         for i, er in enumerate(errors, 1):
             logger.error(f"{i} {er}")
@@ -123,7 +123,7 @@ def validate_non_schema_required(json_obj):
 
 
 def help():
-    return logger.info('Usage: python validator.py --file=doc.json')
+    return logger.info("Usage: python validator.py --file=doc.json")
 
 
 if __name__ == "__main__":
