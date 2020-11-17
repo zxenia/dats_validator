@@ -78,6 +78,11 @@ class ExtraPropertiesTest(unittest.TestCase):
         for error in errors:
             self.assertIn(f"required but not found", error)
 
+    def test_derived_from(self):
+        invalid_validation, errors = validate_extra_properties(invalid_obj)
+        for error in errors:
+            self.assertIn(f"derivedFrom", error)
+
 
 if __name__ == '__main__':
     unittest.main()
